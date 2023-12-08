@@ -1,0 +1,66 @@
+MODE ARGTYPE = STRING;
+MODE ARGLIST = FLEX[0]ARGTYPE;
+
+OP + = (ARGLIST a, b)ARGLIST: (
+  [LWB a:UPB a - LWB a + 1 + UPB b - LWB b + 1 ]ARGTYPE out;
+  (out[LWB a:UPB a]:=a, out[UPB a+1:]:=b);
+  out
+);
+
+PROC min = (INT a, INT b) INT: IF a <= b THEN a ELSE b FI;
+
+PROC is in = (ARGTYPE element, ARGLIST list) BOOL:
+BEGIN
+    BOOL out := FALSE;
+    FOR i FROM LWB list TO UPB list DO
+        out := out OR list[i] = element
+    OD;
+    out
+END;
+
+PROC split = (STRING str, STRING sep) [] STRING:
+BEGIN
+    [1] STRING out;
+    STRING acc := "";
+    INT i := 1;
+    INT sep size := UPB sep -1;
+    FOR c FROM LWB str TO UPB str WHILE str[c:min(c+sep size,UPB str)] /= sep DO
+        acc +:= str[c];
+        i := c
+    OD;
+    out := acc;
+    IF str = "" THEN
+        out
+    ELSE
+        STRING rest := str[min(i+sep size,UPB str)+2:UPB str];
+        # print(("input: ", str, "sep: ", sep, "rest: ", rest, new line)); # 
+        out + split(rest, sep)
+    FI
+END;
+
+# Program # 
+STRING input = "seeds: 79 14 55 13\n\nseed-to-soil map:\n50 98 2\n52 50 48\n\nsoil-to-fertilizer map:\n0 15 37\n37 52 2\n39 0 15\n\nfertilizer-to-water map:\n49 53 8\n0 11 42\n42 0 7\n57 7 4\n\nwater-to-light map:\n88 18 7\n18 25 70\n\nlight-to-temperature map:\n45 77 23\n81 45 19\n68 64 13\n\ntemperature-to-humidity map:\n0 69 1\n1 0 69\n\nhumidity-to-location map:\n60 56 37\n56 93 4";
+
+[0] STRING seeds := split(split(split(input, "\n")[1], ": ")[2], " ");
+
+[0] STRING lines := split(input, "\n\n");
+FOR l FROM LWB lines + 1 TO UPB lines DO
+    STRING map name := split(lines[l], " map:\n")[1];
+    STRING from     := split(map name, "-to-")[1];
+    STRING to       := split(map name, "-to-")[2];
+    STRING rest     := split(lines[l], " map:\n")[2];
+    [0] STRING ranges := split(rest, "\n");
+    FOR r TO UPB ranges DO
+        [0] STRING range := split(ranges[r], " ");
+        IF UPB range - LWB range = 3 THEN
+            INT destination range start = read int(range[1], destination range start);
+            STRING source range start := range[2];
+            STRING range length       := range[3];
+            print((destination range start, newline))
+        FI
+    OD
+    # print((from, to, ranges, newline)) # 
+OD;
+
+print ((is in("79", seeds), newline))
+
