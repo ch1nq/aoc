@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-type Part = u32;
+type Part = u8;
 
 #[derive(Debug, Eq, Ord, Clone, Copy)]
 struct Card<const P: Part>(char);
@@ -60,7 +60,7 @@ fn hand_strength<const P: Part>(hand: &Hand<P>) -> u32 {
     }
 }
 
-fn solve<const P: Part>() {
+fn solve<const P: Part>() -> u32 {
     let mut hands = INPUT
         .split("\n")
         .filter_map(|line| line.split_once(" "))
@@ -79,21 +79,20 @@ fn solve<const P: Part>() {
         })
         .collect::<Vec<_>>();
     hands.sort_by(|(hand1, s1, _), (hand2, s2, _)| match s1.cmp(s2) {
-        Ordering::Equal if hand1.iter().gt(hand2) => Ordering::Greater,
-        Ordering::Equal if hand1.iter().lt(hand2) => Ordering::Less,
+        Ordering::Equal if hand1 > hand2 => Ordering::Greater,
+        Ordering::Equal if hand1 < hand2 => Ordering::Less,
         ordering => ordering,
     });
-    let ans: u32 = hands
+    hands
         .iter()
         .enumerate()
         .map(|(rank, (_, _, bid))| (rank as u32 + 1) * bid)
-        .sum();
-    dbg!(ans);
+        .sum()
 }
 
 fn main() {
-    solve::<1>();
-    solve::<2>();
+    dbg!(solve::<1>());
+    dbg!(solve::<2>());
 }
 
 const INPUT: &str = "72772 82
