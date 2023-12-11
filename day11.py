@@ -15,8 +15,7 @@ for y, row in enumerate(universe):
         if c == "#":
             galaxies.add((x, y))
 
-for part in (1, 2):
-    expansion_factor = {1: 2, 2: 1000000}[part]
+for expansion_factor in (2, 1000000):
     ans = 0
     for (ax, ay), (bx, by) in itertools.combinations(galaxies, 2):
         extra_x = empty_cols & {x for x in range(min(ax, bx), max(ax, bx))}
