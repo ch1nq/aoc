@@ -6,8 +6,12 @@ authors = ["askepen <aske@vhg26.dk>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 advent-of-code-data = "^2.0.1"
+tqdm = "^4.66.1"
+numpy = "^1.26.2"
+networkx = "^3.2.1"
+pyvis = "^0.3.2"
 
 
 [build-system]
