@@ -3,3 +3,8 @@ day1
 day2/target
 day7/target
 target
+.bsp/scala-cli.json
+.mcp.json
+.metals
+.scala-build
+.vscode
